@@ -1,0 +1,213 @@
+<h2 class="sr-only">Pantalla de bienvenida del portal del cliente rediseñada según el sistema unificado: tarjeta de estado con progreso, timeline de hitos con checks verdes para completados y punto azul para el hito en curso, y galería de evolución</h2>
+<div id="pc-root">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+  #pc-root{
+    --bg-base:#0A0F1A; --bg-surface:#0E1626; --bg-raised:#162132; --bg-overlay:#1C2940;
+    --text-primary:#F4F7FC; --text-secondary:#A8B2C4; --text-tertiary:#6B7689;
+    --primary-100:#C7DEFD; --primary-300:#6FA8F6; --primary-500:#2D7FF9; --primary-600:#1E66D6; --primary-700:#1850AB; --primary-900:#0C2F6B;
+    --success-100:#9FE1CB; --success-300:#5DCAA5; --success-500:#1D9E75; --success-900:#04342C;
+    --b-subtle:rgba(255,255,255,0.06); --b-default:rgba(255,255,255,0.10); --b-strong:rgba(255,255,255,0.16);
+    --font-ui:'Inter',system-ui,sans-serif; --font-num:'Space Grotesk','Inter',sans-serif;
+    font-family:var(--font-ui); display:flex; justify-content:center; padding:16px 0;
+    color:var(--text-primary); -webkit-font-smoothing:antialiased;
+  }
+
+  .pc-phone{
+    width:390px; max-width:100%; background:var(--bg-base);
+    border-radius:28px; border:1px solid var(--b-subtle); overflow:hidden;
+    box-shadow:0 24px 60px rgba(0,0,0,0.5);
+    display:flex; flex-direction:column; height:820px; position:relative;
+  }
+
+  .pc-body{flex:1;overflow-y:auto;padding:22px 20px 8px;}
+  .pc-body::-webkit-scrollbar{width:0;}
+
+  /* Greeting */
+  .pc-greet{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+  .pc-greet-left{display:flex;align-items:center;gap:14px;}
+  .pc-avatar{width:54px;height:54px;border-radius:50%;flex-shrink:0;border:2px solid var(--primary-700);
+    background:linear-gradient(135deg,#3a4a5e,#1f2937);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .pc-avatar svg{width:30px;height:30px;color:#c7d2e0;}
+  .pc-welcome{font-size:11px;font-weight:600;letter-spacing:0.12em;color:var(--primary-300);text-transform:uppercase;margin:0 0 3px;}
+  .pc-name{font-size:21px;font-weight:700;letter-spacing:-0.01em;margin:0;}
+  .pc-support{width:46px;height:46px;border-radius:50%;flex-shrink:0;background:var(--bg-surface);border:1px solid var(--b-default);
+    display:flex;align-items:center;justify-content:center;color:var(--text-secondary);cursor:pointer;transition:.15s;}
+  .pc-support:hover{border-color:var(--b-strong);color:var(--text-primary);}
+
+  /* Status card */
+  .pc-status{background:var(--bg-surface);border:1px solid var(--b-subtle);border-radius:16px;padding:22px 20px;margin-bottom:28px;}
+  .pc-status-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:20px;}
+  .pc-status-label{font-size:14px;color:var(--text-secondary);margin:0 0 6px;}
+  .pc-status-project{font-size:24px;font-weight:700;letter-spacing:-0.015em;line-height:1.15;margin:0;}
+  .pc-phase{flex-shrink:0;background:var(--primary-900);color:var(--primary-100);font-size:12px;font-weight:600;
+    padding:7px 14px;border-radius:999px;text-align:center;line-height:1.3;border:1px solid var(--primary-700);}
+  .pc-progress-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
+  .pc-progress-row .l{font-size:14px;color:var(--text-secondary);}
+  .pc-progress-row .v{font-family:var(--font-num);font-size:24px;font-weight:700;color:var(--primary-300);}
+  .pc-bar{height:9px;background:rgba(255,255,255,0.07);border-radius:999px;overflow:hidden;margin-bottom:18px;}
+  .pc-bar-fill{height:100%;width:68%;background:var(--primary-500);border-radius:999px;}
+  .pc-delivery{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--text-secondary);font-style:italic;}
+  .pc-delivery svg{color:var(--primary-300);flex-shrink:0;}
+
+  /* Section title overline */
+  .pc-overline{font-size:13px;font-weight:600;letter-spacing:0.1em;color:var(--text-secondary);text-transform:uppercase;margin:0 0 18px;}
+
+  /* Timeline */
+  .pc-timeline{position:relative;padding-left:4px;margin-bottom:30px;}
+  .pc-milestone{display:flex;gap:16px;position:relative;padding-bottom:24px;}
+  .pc-milestone:last-child{padding-bottom:0;}
+  .pc-ms-marker{position:relative;flex-shrink:0;display:flex;flex-direction:column;align-items:center;}
+  .pc-ms-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2;}
+  .pc-ms-dot.done{background:var(--success-500);color:#04342C;}
+  .pc-ms-dot.current{background:transparent;border:2px solid var(--primary-500);}
+  .pc-ms-dot.current .pulse{width:11px;height:11px;border-radius:50%;background:var(--primary-500);}
+  .pc-ms-line{position:absolute;top:30px;bottom:-24px;width:2px;background:var(--b-strong);z-index:1;}
+  .pc-milestone:last-child .pc-ms-line{display:none;}
+  .pc-ms-content{padding-top:3px;}
+  .pc-ms-title{font-size:16px;font-weight:600;margin:0 0 5px;}
+  .pc-ms-title.current{color:var(--primary-300);}
+  .pc-ms-desc{font-size:13px;line-height:1.5;color:var(--text-tertiary);font-style:italic;margin:0;}
+
+  /* Gallery */
+  .pc-gal-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;}
+  .pc-gal-link{font-size:13px;color:var(--primary-300);font-weight:600;}
+  .pc-gal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px;}
+  .pc-gal-item{position:relative;border-radius:14px;overflow:hidden;height:150px;border:1px solid var(--b-subtle);}
+  .pc-gal-img{width:100%;height:100%;object-fit:cover;display:block;}
+  .pc-gal-tag{position:absolute;top:10px;left:10px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:7px;letter-spacing:0.03em;}
+  .pc-gal-tag.before{background:rgba(0,0,0,0.65);color:#fff;backdrop-filter:blur(4px);}
+  .pc-gal-tag.current{background:var(--primary-900);color:var(--primary-100);border:1px solid var(--primary-700);}
+
+  /* Tab bar */
+  .pc-tabs{flex-shrink:0;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--b-subtle);background:var(--bg-base);padding:12px 8px 16px;}
+  .pc-tab{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;font-weight:500;color:var(--text-tertiary);cursor:pointer;}
+  .pc-tab.active{color:var(--primary-500);}
+  .pc-tab svg{width:24px;height:24px;}
+
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+</style>
+
+  <div class="pc-phone">
+
+    <div class="pc-body">
+
+      <!-- Greeting -->
+      <div class="pc-greet">
+        <div class="pc-greet-left">
+          <div class="pc-avatar">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5z"/></svg>
+          </div>
+          <div>
+            <p class="pc-welcome">Bienvenido de nuevo</p>
+            <p class="pc-name">Sr. Alejandro Ortiz</p>
+          </div>
+        </div>
+        <div class="pc-support" aria-label="Soporte">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+        </div>
+      </div>
+
+      <!-- Status card -->
+      <div class="pc-status">
+        <div class="pc-status-top">
+          <div>
+            <p class="pc-status-label">Estado de su proyecto</p>
+            <p class="pc-status-project">Reforma Ático Serrano</p>
+          </div>
+          <span class="pc-phase">Fase 3<br>de 5</span>
+        </div>
+        <div class="pc-progress-row">
+          <span class="l">Progreso General</span>
+          <span class="v">68%</span>
+        </div>
+        <div class="pc-bar"><div class="pc-bar-fill"></div></div>
+        <div class="pc-delivery">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Fecha entrega est.: 12 Dic 2024
+        </div>
+      </div>
+
+      <!-- Milestones -->
+      <p class="pc-overline">Hitos Completados</p>
+      <div class="pc-timeline">
+
+        <div class="pc-milestone">
+          <div class="pc-ms-marker">
+            <div class="pc-ms-dot done">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+            <div class="pc-ms-line"></div>
+          </div>
+          <div class="pc-ms-content">
+            <p class="pc-ms-title">Demolición y Desescombro</p>
+            <p class="pc-ms-desc">Finalizado el 15 de Octubre. Zona limpia y preparada para instalaciones.</p>
+          </div>
+        </div>
+
+        <div class="pc-milestone">
+          <div class="pc-ms-marker">
+            <div class="pc-ms-dot done">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+            <div class="pc-ms-line"></div>
+          </div>
+          <div class="pc-ms-content">
+            <p class="pc-ms-title">Fontanería y Electricidad</p>
+            <p class="pc-ms-desc">Instalaciones empotradas verificadas según normativa técnica.</p>
+          </div>
+        </div>
+
+        <div class="pc-milestone">
+          <div class="pc-ms-marker">
+            <div class="pc-ms-dot current"><div class="pulse"></div></div>
+          </div>
+          <div class="pc-ms-content">
+            <p class="pc-ms-title current">Revestimientos y Suelos</p>
+            <p class="pc-ms-desc">Iniciada la colocación de tarima natural y alicatados de gran formato.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Gallery -->
+      <div class="pc-gal-head">
+        <p class="pc-overline" style="margin:0;">Galería de Evolución</p>
+        <span class="pc-gal-link">Semana 4</span>
+      </div>
+      <div class="pc-gal-grid">
+        <div class="pc-gal-item">
+          <div class="pc-gal-img" style="background:linear-gradient(160deg,#d8d8d4,#b0b0ac);"></div>
+          <span class="pc-gal-tag before">Original</span>
+        </div>
+        <div class="pc-gal-item">
+          <div class="pc-gal-img" style="background:linear-gradient(160deg,#e8d9c5,#c9a878 60%,#8a6d4a);"></div>
+          <span class="pc-gal-tag current">En curso</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tab bar -->
+    <div class="pc-tabs">
+      <div class="pc-tab active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-7h6v7"/></svg>
+        Inicio
+      </div>
+      <div class="pc-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        Galería
+      </div>
+      <div class="pc-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+        Docs
+      </div>
+      <div class="pc-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Mensajes
+      </div>
+    </div>
+
+  </div>
+</div>

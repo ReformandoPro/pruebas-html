@@ -1,0 +1,138 @@
+<h2 class="sr-only">Pantalla "Cierre de Obra" rediseñada según el sistema unificado: importe pendiente de cobro destacado, total presupuestado y pagos recibidos en verde, hitos de pago con los pagados marcados en verde y el pendiente en azul, lista de gastos extra, un toggle de obra finalizada y el total de la factura final con botón para generarla.</h2>
+<div id="co-root">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+  #co-root{
+    --bg-base:#0A0F1A; --bg-surface:#0E1626; --bg-raised:#162132;
+    --text-primary:#F4F7FC; --text-secondary:#A8B2C4; --text-tertiary:#6B7689;
+    --primary-100:#C7DEFD; --primary-300:#6FA8F6; --primary-500:#2D7FF9; --primary-600:#1E66D6; --primary-700:#1850AB; --primary-900:#0C2F6B;
+    --success-100:#9FE1CB; --success-300:#5DCAA5; --success-500:#1D9E75; --success-700:#0F6E56; --success-900:#04342C;
+    --b-subtle:rgba(255,255,255,0.06); --b-default:rgba(255,255,255,0.10); --b-strong:rgba(255,255,255,0.16);
+    --font-ui:'Inter',system-ui,sans-serif; --font-num:'Space Grotesk','Inter',sans-serif;
+    font-family:var(--font-ui); display:flex; justify-content:center; padding:16px 0; color:var(--text-primary); -webkit-font-smoothing:antialiased;
+  }
+  .co-phone{width:390px;max-width:100%;background:var(--bg-base);border-radius:28px;border:1px solid var(--b-subtle);overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.5);display:flex;flex-direction:column;height:830px;position:relative;}
+  .co-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 14px;border-bottom:1px solid var(--b-subtle);background:var(--bg-base);flex-shrink:0;}
+  .co-ic{width:24px;height:24px;color:var(--primary-300);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .co-htitle{text-align:center;line-height:1.25;}
+  .co-htitle .t{font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;}
+  .co-htitle .s{font-size:12px;color:var(--text-tertiary);margin-top:2px;}
+  .co-body{flex:1;overflow-y:auto;padding:20px 18px 8px;scrollbar-width:none;}
+  .co-body::-webkit-scrollbar{width:0;}
+
+  .co-hero{background:var(--bg-surface);border:1px solid var(--b-subtle);border-radius:16px;padding:20px;margin-bottom:24px;}
+  .co-hero-lbl{text-align:center;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--primary-300);margin:0 0 6px;}
+  .co-hero-amt{text-align:center;font-family:var(--font-num);font-size:38px;font-weight:700;letter-spacing:-0.01em;line-height:1;margin:0 0 18px;}
+  .co-hero-split{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .co-mini{background:var(--bg-raised);border-radius:12px;padding:13px 14px;}
+  .co-mini .l{font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-tertiary);margin:0 0 5px;}
+  .co-mini .v{font-family:var(--font-num);font-size:18px;font-weight:700;margin:0;}
+  .co-mini .v.green{color:var(--success-300);}
+
+  .co-ovl{font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-secondary);margin:0 0 14px;}
+
+  .co-hitos{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+  .co-hito{display:flex;align-items:center;gap:13px;background:var(--bg-surface);border:1px solid var(--b-subtle);border-radius:14px;padding:14px 15px;}
+  .co-hito.pending{border-color:var(--primary-700);background:rgba(45,127,249,0.06);}
+  .co-hdot{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .co-hdot.paid{background:var(--success-900);color:var(--success-300);}
+  .co-hdot.pend{background:var(--primary-500);color:#fff;}
+  .co-htxt{flex:1;min-width:0;}
+  .co-hname{font-size:15px;font-weight:600;margin:0 0 2px;}
+  .co-hname.pend{color:var(--primary-300);}
+  .co-hsub{font-size:12px;color:var(--text-tertiary);margin:0;}
+  .co-hsub.pend{color:var(--primary-300);}
+  .co-hamt{font-family:var(--font-num);font-size:16px;font-weight:700;flex-shrink:0;}
+  .co-hamt.pend{color:var(--primary-300);}
+
+  .co-extras{background:var(--bg-surface);border:1px solid var(--b-subtle);border-radius:16px;overflow:hidden;margin-bottom:24px;}
+  .co-extra{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 16px;}
+  .co-extra + .co-extra{border-top:1px solid var(--b-subtle);}
+  .co-extra.total{background:var(--bg-raised);}
+  .co-ename{font-size:14px;font-weight:600;margin:0 0 3px;}
+  .co-edesc{font-size:12px;color:var(--text-tertiary);margin:0;}
+  .co-eamt{font-family:var(--font-num);font-size:15px;font-weight:700;flex-shrink:0;}
+  .co-etot-l{font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-secondary);}
+  .co-eamt.blue{color:var(--primary-300);}
+
+  .co-toggle{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--bg-surface);border:1px solid var(--b-subtle);border-radius:14px;padding:16px;margin-bottom:22px;}
+  .co-tg-txt .n{font-size:15px;font-weight:600;margin:0 0 3px;}
+  .co-tg-txt .d{font-size:12px;color:var(--text-tertiary);margin:0;}
+  .co-switch{width:50px;height:28px;border-radius:999px;background:var(--bg-raised);border:1px solid var(--b-strong);flex-shrink:0;position:relative;cursor:pointer;}
+  .co-switch .knob{position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.15s;}
+
+  .co-totals{border-top:1px dashed var(--b-strong);padding-top:16px;margin-bottom:8px;}
+  .co-trow{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .co-trow .l{font-size:14px;color:var(--text-secondary);}
+  .co-trow .v{font-family:var(--font-num);font-size:15px;font-weight:600;color:var(--text-secondary);}
+  .co-tfinal{display:flex;align-items:baseline;justify-content:space-between;margin-top:6px;}
+  .co-tfinal .l{font-size:17px;font-weight:700;}
+  .co-tfinal .v{font-family:var(--font-num);font-size:24px;font-weight:700;color:var(--primary-300);}
+
+  .co-foot{flex-shrink:0;border-top:1px solid var(--b-subtle);background:var(--bg-base);padding:16px 18px 20px;}
+  .co-cta{width:100%;box-sizing:border-box;background:var(--primary-500);color:#fff;border:none;cursor:pointer;border-radius:12px;padding:16px;font-family:var(--font-ui);font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 24px rgba(45,127,249,0.35);transition:.15s;}
+  .co-cta:hover{background:var(--primary-600);}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+</style>
+
+  <div class="co-phone">
+    <div class="co-header">
+      <div class="co-ic" aria-label="Volver"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+      <div class="co-htitle"><div class="t">Cierre de Obra</div><div class="s">Ref: #28492 · Loft Gran Vía</div></div>
+      <div class="co-ic" aria-label="Más opciones"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></div>
+    </div>
+
+    <div class="co-body">
+      <div class="co-hero">
+        <p class="co-hero-lbl">Pendiente de cobro (15%)</p>
+        <p class="co-hero-amt">4.275,00€</p>
+        <div class="co-hero-split">
+          <div class="co-mini"><p class="l">Total Presupuestado</p><p class="v">28.500,00€</p></div>
+          <div class="co-mini"><p class="l">Pagos Recibidos</p><p class="v green">24.225,00€</p></div>
+        </div>
+      </div>
+
+      <p class="co-ovl">Hitos de Pago</p>
+      <div class="co-hitos">
+        <div class="co-hito">
+          <div class="co-hdot paid"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <div class="co-htxt"><p class="co-hname">Inicio de Obra (50%)</p><p class="co-hsub">Pagado el 12/05/2023</p></div>
+          <span class="co-hamt">14.250€</span>
+        </div>
+        <div class="co-hito">
+          <div class="co-hdot paid"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <div class="co-htxt"><p class="co-hname">Certificación Intermedia (35%)</p><p class="co-hsub">Pagado el 28/06/2023</p></div>
+          <span class="co-hamt">9.975€</span>
+        </div>
+        <div class="co-hito pending">
+          <div class="co-hdot pend"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <div class="co-htxt"><p class="co-hname pend">Certificación Final (15%)</p><p class="co-hsub pend">Pendiente de facturación</p></div>
+          <span class="co-hamt pend">4.275€</span>
+        </div>
+      </div>
+
+      <p class="co-ovl">Gastos Extra y Herramientas</p>
+      <div class="co-extras">
+        <div class="co-extra"><div><p class="co-ename">Azulejos Porcelánicos (Extra m²)</p><p class="co-edesc">12 unidades x 45,00€</p></div><span class="co-eamt">540,00€</span></div>
+        <div class="co-extra"><div><p class="co-ename">Alquiler de Cortadora de Rubí</p><p class="co-edesc">3 días x 35,00€</p></div><span class="co-eamt">105,00€</span></div>
+        <div class="co-extra"><div><p class="co-ename">Sacos de Mortero Adicionales</p><p class="co-edesc">15 unidades x 12,00€</p></div><span class="co-eamt">180,00€</span></div>
+        <div class="co-extra total"><span class="co-etot-l">Total Extras</span><span class="co-eamt blue">825,00€</span></div>
+      </div>
+
+      <div class="co-toggle">
+        <div class="co-tg-txt"><p class="n">Obra Finalizada</p><p class="d">Confirmar entrega de llaves y limpieza final.</p></div>
+        <div class="co-switch" role="switch" aria-checked="false"><div class="knob"></div></div>
+      </div>
+
+      <div class="co-totals">
+        <div class="co-trow"><span class="l">Subtotal Obra</span><span class="v">4.275,00€</span></div>
+        <div class="co-trow"><span class="l">Extras y Herramientas</span><span class="v">825,00€</span></div>
+        <div class="co-tfinal"><span class="l">Total Factura Final</span><span class="v">5.100,00€</span></div>
+      </div>
+    </div>
+
+    <div class="co-foot">
+      <button class="co-cta"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Generar Factura Final</button>
+    </div>
+  </div>
+</div>
